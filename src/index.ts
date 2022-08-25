@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import dotenv from 'dotenv';
 import { createExpressServer } from 'routing-controllers';
 import { DataSource } from 'typeorm';
@@ -32,6 +34,9 @@ const main = async () => {
   // and "synchronize" database schema, call "initialize()" method of a newly created database
   // once in your application bootstrap
   await AppDataSource.initialize();
+  return AppDataSource;
 };
 
-main();
+const AppDataSource = main();
+
+export { AppDataSource };

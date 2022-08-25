@@ -1,11 +1,28 @@
-import 'reflect-metadata';
+import { Controller, Delete, Get, Param, Post } from 'routing-controllers';
+import { Container } from 'typedi';
 
-import { Controller, Post } from 'routing-controllers';
+import { PostService } from '../services/services';
 
 @Controller()
 export class Controllers {
+  postService: PostService;
+
+  constructor() {
+    this.postService = Container.get(PostService);
+  }
+
+  @Get('/posts')
+  getPosts() {
+    return this.postService.getPosts();
+  }
+
   @Post('/posts')
-  createPost() {
-    return 'This action adds a new post';
+  async createPost() {
+    return this.postService.createPost('Hello', 'World');
+  }
+
+  @Delete('/posts/:id')
+  async deletePost(@Param('id') id: number) {
+    return this.postService.deletePost(id);
   }
 }

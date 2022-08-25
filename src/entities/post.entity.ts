@@ -9,5 +9,5 @@ export class Post {
   title: string;
 
   @Column()
-  body: string;
+  content: string;
 }
