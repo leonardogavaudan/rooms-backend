@@ -5,7 +5,7 @@ import { createExpressServer } from 'routing-controllers';
 import { DataSource } from 'typeorm';
 
 import { Controllers } from './controllers/controllers';
-import { Post } from './entities/post.entity';
+import { ExplorationPost } from './entities/exploration.post.entity';
 
 dotenv.config();
 const port = process.env.PORT;
@@ -26,7 +26,7 @@ const main = async () => {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [Post],
+    entities: [ExplorationPost],
     synchronize: true,
   });
 

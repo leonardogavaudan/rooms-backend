@@ -2,32 +2,37 @@ import { Service } from 'typedi';
 import { Repository } from 'typeorm';
 
 import { AppDataSource } from '..';
-import { Post } from '../entities/post.entity';
+import { ExplorationPost } from '../entities/exploration.post.entity';
 
 @Service()
-class PostService {
-  public async getRepository(): Promise<Repository<Post>> {
-    return (await AppDataSource).getRepository(Post);
+class ExplorationPostService {
+  public async getRepository(): Promise<Repository<ExplorationPost>> {
+    return (await AppDataSource).getRepository(ExplorationPost);
   }
 
-  public async createPost(title: string, content: string): Promise<Post> {
+  public async createExplorationPost(
+    title: string,
+    content: string
+  ): Promise<ExplorationPost['id']> {
     const repository = await this.getRepository();
-    const post = new Post();
-    post.title = title;
-    post.content = content;
-    return repository.save(post);
+    const explorationPost = new ExplorationPost();
+    explorationPost.title = title;
+    explorationPost.content = content;
+
+    const explorationPostResult = await repository.save(explorationPost);
+    return explorationPostResult.id;
   }
 
-  public async getPosts(): Promise<Post[]> {
+  public async getExplorationPosts(): Promise<ExplorationPost[]> {
     const repository = await this.getRepository();
     return repository.find();
   }
 
-  public async deletePost(id: number): Promise<boolean> {
+  public async deleteExplorationPost(id: number): Promise<boolean> {
     const repository = await this.getRepository();
     const deleteResult = await repository.delete({ id });
     return !!deleteResult.affected;
   }
 }
 
-export { PostService };
+export { ExplorationPostService };

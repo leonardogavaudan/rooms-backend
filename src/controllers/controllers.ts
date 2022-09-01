@@ -1,28 +1,29 @@
 import { Controller, Delete, Get, Param, Post } from 'routing-controllers';
 import { Container } from 'typedi';
 
-import { PostService } from '../services/services';
+import { ExplorationPost } from '../entities/exploration.post.entity';
+import { ExplorationPostService } from '../services/services';
 
 @Controller()
 export class Controllers {
-  postService: PostService;
+  explorationPostService: ExplorationPostService;
 
   constructor() {
-    this.postService = Container.get(PostService);
+    this.explorationPostService = Container.get(ExplorationPostService);
   }
 
-  @Get('/posts')
-  getPosts() {
-    return this.postService.getPosts();
+  @Get('/exploration-posts')
+  getExplorationPosts(): Promise<ExplorationPost[]> {
+    return this.explorationPostService.getExplorationPosts();
   }
 
-  @Post('/posts')
-  async createPost() {
-    return this.postService.createPost('Hello', 'World');
+  @Post('/exploration-posts')
+  async createExplorationPost(): Promise<ExplorationPost['id']> {
+    return this.explorationPostService.createExplorationPost('Hello', 'World');
   }
 
-  @Delete('/posts/:id')
-  async deletePost(@Param('id') id: number) {
-    return this.postService.deletePost(id);
+  @Delete('/exploration-posts/:id')
+  async deleteExplorationPost(@Param('id') id: number): Promise<boolean> {
+    return this.explorationPostService.deleteExplorationPost(id);
   }
 }
