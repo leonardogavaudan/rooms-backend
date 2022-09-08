@@ -11,12 +11,10 @@ class ExplorationPostService {
   }
 
   public async createExplorationPost(
-    title: string,
     content: string
   ): Promise<ExplorationPost['id']> {
     const repository = await this.getRepository();
     const explorationPost = new ExplorationPost();
-    explorationPost.title = title;
     explorationPost.content = content;
 
     const explorationPostResult = await repository.save(explorationPost);

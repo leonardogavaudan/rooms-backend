@@ -14,7 +14,9 @@ const main = async () => {
   // creates express app, registers all controller routes and returns you express app instance
   const app = createExpressServer({
     controllers: [Controllers],
-    cors: true,
+    cors: {
+      origin: '*', // (note: do not use this in production)
+    },
   });
 
   app.listen(port);
@@ -36,6 +38,8 @@ const main = async () => {
   await AppDataSource.initialize();
   return AppDataSource;
 };
+
+console.log('Listening on port', port);
 
 const AppDataSource = main();
 

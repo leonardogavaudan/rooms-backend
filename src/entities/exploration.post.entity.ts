@@ -6,8 +6,5 @@ export class ExplorationPost {
   id: number;
 
   @Column()
-  title: string;
-
-  @Column()
   content: string;
 }

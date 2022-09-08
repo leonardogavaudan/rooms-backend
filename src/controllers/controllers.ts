@@ -1,10 +1,17 @@
-import { Controller, Delete, Get, Param, Post } from 'routing-controllers';
+import {
+  BodyParam,
+  Delete,
+  Get,
+  JsonController,
+  Param,
+  Post,
+} from 'routing-controllers';
 import { Container } from 'typedi';
 
 import { ExplorationPost } from '../entities/exploration.post.entity';
 import { ExplorationPostService } from '../services/services';
 
-@Controller()
+@JsonController()
 export class Controllers {
   explorationPostService: ExplorationPostService;
 
@@ -18,8 +25,10 @@ export class Controllers {
   }
 
   @Post('/exploration-posts')
-  async createExplorationPost(): Promise<ExplorationPost['id']> {
-    return this.explorationPostService.createExplorationPost('Hello', 'World');
+  async createExplorationPost(
+    @BodyParam('content') content: string
+  ): Promise<ExplorationPost['id']> {
+    return this.explorationPostService.createExplorationPost(content);
   }
 
   @Delete('/exploration-posts/:id')
