@@ -1,19 +1,19 @@
 import { Service } from 'typedi';
 import { Repository } from 'typeorm';
 
-import { AppDataSource } from '..';
+import { dataSource } from '../app';
 import { ExplorationPost } from '../entities/exploration.post.entity';
 
 @Service()
 class ExplorationPostService {
-  public async getRepository(): Promise<Repository<ExplorationPost>> {
-    return (await AppDataSource).getRepository(ExplorationPost);
+  private getRepository(): Repository<ExplorationPost> {
+    return dataSource.getRepository(ExplorationPost);
   }
 
   public async createExplorationPost(
     content: string
   ): Promise<ExplorationPost['id']> {
-    const repository = await this.getRepository();
+    const repository = this.getRepository();
     const explorationPost = new ExplorationPost();
     explorationPost.content = content;
 
@@ -22,12 +22,12 @@ class ExplorationPostService {
   }
 
   public async getExplorationPosts(): Promise<ExplorationPost[]> {
-    const repository = await this.getRepository();
+    const repository = this.getRepository();
     return repository.find();
   }
 
   public async deleteExplorationPost(id: number): Promise<boolean> {
-    const repository = await this.getRepository();
+    const repository = this.getRepository();
     const deleteResult = await repository.delete({ id });
     return !!deleteResult.affected;
   }
