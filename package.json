@@ -2,6 +2,7 @@
   "name": "rooms-backend",
   "main": "src/app.ts",
   "scripts": {
+    "start": "ts-node src/app.ts",
     "dev": "nodemon src/app.ts"
   },
   "dependencies": {
