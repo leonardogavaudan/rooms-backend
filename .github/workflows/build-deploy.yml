@@ -18,8 +18,8 @@ jobs:
         with:
           username: ${{ secrets.AWS_ACCESS_KEY_ID }}
           password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ AWS_REGION }}.amazonaws.com
-          repository: ${{ ECR_REPOSITORY }}
+          registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+          repository: ${{ env.ECR_REPOSITORY }}
           tags: latest
 
   # deploy:
