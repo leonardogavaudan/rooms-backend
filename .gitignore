@@ -3,3 +3,11 @@ node_modules/*
 .env
 dist/*
 yarn-error.log
+
+# Webstorm
+.idea/*
+
+# Terraform
+terraform/.terraform/*
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
