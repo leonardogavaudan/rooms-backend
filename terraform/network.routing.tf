@@ -25,6 +25,8 @@ resource "aws_route" "public" {
 ###### Private ######
 #####################
 
+# Create a private route table for each private subnet
+# This is required because each private subnet needs its own NAT gateway
 resource "aws_route_table" "private" {
   count  = length(var.private_subnets)
   vpc_id = aws_vpc.main.id

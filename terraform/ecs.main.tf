@@ -31,7 +31,7 @@ resource "aws_ecs_service" "ecs_service" {
   desired_count   = 0
 
   network_configuration {
-    subnets = []
+    subnets = [aws_subnet.private.*]
   }
 }
 
