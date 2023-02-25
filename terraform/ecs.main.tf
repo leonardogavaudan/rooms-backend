@@ -1,7 +1,7 @@
 # Create a Fargate task definition
 # Task definition level parameters:
 # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html
-resource "aws_ecs_task_definition" "ecs_task_definition" {
+resource "aws_ecs_task_definition" "main" {
   family                   = "${var.app-name}-task-definition"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
@@ -11,7 +11,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   container_definitions    = jsonencode([
     {
       name         = "${var.app-name}-container"
-      image        = "${aws_ecr_repository.ecr_repository.repository_url}:latest"
+      image        = "${aws_ecr_repository.main.repository_url}:latest"
       portMappings = [
         {
           containerPort = 80
@@ -23,19 +23,35 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
 }
 
 # Create a Fargate service
-resource "aws_ecs_service" "ecs_service" {
+resource "aws_ecs_service" "main" {
   name            = "${var.app-name}-service"
   launch_type     = "FARGATE"
-  cluster         = aws_ecs_cluster.ecs_cluster.arn
-  task_definition = aws_ecs_task_definition.ecs_task_definition.arn
+  cluster         = aws_ecs_cluster.main.arn
+  task_definition = aws_ecs_task_definition.main.arn
   desired_count   = 0
 
   network_configuration {
-    subnets = [aws_subnet.private.*]
+    subnets          = aws_subnet.private.*.id
+    assign_public_ip = false
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.main.arn
+    container_name   = "${var.app-name}-container"
+    container_port   = var.container_port
+  }
+
+  /*
+   * Needed to prevent Terraform from trying to update the service
+   * - After the service is created, the desired_count is managed by the autoscaling group
+   * - After the service is created, the task_definition is managed by Github Actions
+   */
+  lifecycle {
+    ignore_changes = [task_definition, desired_count]
   }
 }
 
 # Create a Fargate cluster
-resource "aws_ecs_cluster" "ecs_cluster" {
+resource "aws_ecs_cluster" "main" {
   name = "${var.app-name}-cluster"
 }

@@ -11,3 +11,6 @@ yarn-error.log
 terraform/.terraform/*
 terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
+
+# Webstorm
+.idea/*

@@ -11,7 +11,7 @@ class ExplorationPostService {
   }
 
   public async createExplorationPost(
-    content: string
+    content: string,
   ): Promise<ExplorationPost['id']> {
     const repository = this.getRepository();
     const explorationPost = new ExplorationPost();
