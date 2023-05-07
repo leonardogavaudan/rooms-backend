@@ -9,7 +9,7 @@ env:
   ECR_REPOSITORY: rooms-container-repository
   ECS_CLUSTER: rooms-cluster
   ECS_SERVICE: rooms-service
-  ECS_TASK_DEFINITION: first-run-task-definition
+  ECS_TASK_DEFINITION: rooms-task-definition
   CONTAINER_NAME: rooms-container
 
 jobs:
