@@ -1,6 +1,6 @@
 # Create a ECR repository
 resource "aws_ecr_repository" "main" {
-  name                 = "${var.app-name}-repository"
+  name                 = var.repository_name
   image_tag_mutability = "MUTABLE"
 }
 

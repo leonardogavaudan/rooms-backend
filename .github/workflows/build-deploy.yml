@@ -5,12 +5,12 @@ on:
     branches: main
 
 env:
+  APP_NAME: rooms
   AWS_REGION: ${{ secrets.AWS_REGION }}
-  ECR_REPOSITORY: rooms-container-repository
-  ECS_CLUSTER: rooms-cluster
-  ECS_SERVICE: rooms-service
-  ECS_TASK_DEFINITION: rooms-task-definition
-  CONTAINER_NAME: rooms-container
+  ECR_REPOSITORY: ${{ APP_NAME }}-repository
+  ECS_CLUSTER: ${{ APP_NAME }}-cluster
+  ECS_SERVICE: ${{ APP_NAME }}-service
+  CONTAINER_NAME: ${{ APP_NAME }}-container
 
 jobs:
   build:
@@ -45,18 +45,6 @@ jobs:
         id: set-output-image
         run: echo "::set-output name=image::$REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG"
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION }}
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.set-output-image.outputs.image }}
-
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+      - name: Force new deployment on Amazon ECS service
+        run: |
+          aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --force-new-deployment
