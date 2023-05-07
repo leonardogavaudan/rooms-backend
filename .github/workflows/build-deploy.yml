@@ -7,10 +7,6 @@ on:
 env:
   APP_NAME: rooms
   AWS_REGION: ${{ secrets.AWS_REGION }}
-  ECR_REPOSITORY: ${{ APP_NAME }}-repository
-  ECS_CLUSTER: ${{ APP_NAME }}-cluster
-  ECS_SERVICE: ${{ APP_NAME }}-service
-  CONTAINER_NAME: ${{ APP_NAME }}-container
 
 jobs:
   build:
@@ -38,13 +34,13 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: latest
         run: |
-          docker build -t $REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG .
-          docker push $REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
+          docker build -t $REGISTRY/${{ env.APP_NAME }}-repository:$IMAGE_TAG .
+          docker push $REGISTRY/${{ env.APP_NAME }}-repository:$IMAGE_TAG
 
       - name: Set output image
         id: set-output-image
-        run: echo "::set-output name=image::$REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG"
+        run: echo "::set-output name=image::$REGISTRY/${{ env.APP_NAME }}-repository:$IMAGE_TAG"
 
       - name: Force new deployment on Amazon ECS service
         run: |
-          aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --force-new-deployment
+          aws ecs update-service --cluster ${{ env.APP_NAME }}-cluster --service ${{ env.APP_NAME }}-service --force-new-deployment
