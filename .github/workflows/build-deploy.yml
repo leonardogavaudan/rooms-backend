@@ -16,10 +16,6 @@ jobs:
   build:
     name: Build Image
     runs-on: ubuntu-latest
-    env:
-      REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      IMAGE_TAG: latest
-      IMAGE: $REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
 
     steps:
       - name: Check out code
@@ -38,9 +34,16 @@ jobs:
 
       - name: Build, tag, and push docker image to Amazon ECR
         id: build-image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: latest
         run: |
-          docker build -t $IMAGE .
-          docker push $IMAGE
+          docker build -t $REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG .
+          docker push $REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
+
+      - name: Set output image
+        id: set-output-image
+        run: echo "::set-output name=image::$REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG"
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
@@ -48,7 +51,7 @@ jobs:
         with:
           task-definition: ${{ env.ECS_TASK_DEFINITION }}
           container-name: ${{ env.CONTAINER_NAME }}
-          image: $IMAGE
+          image: ${{ steps.set-output-image.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
