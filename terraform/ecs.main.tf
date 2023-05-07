@@ -2,7 +2,7 @@
 # Task definition level parameters:
 # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html
 resource "aws_ecs_task_definition" "main" {
-  family                   = var.task_definition_name
+  family                   = "${var.app-name}-task-definition"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = "0.25 vCPU"
@@ -10,7 +10,7 @@ resource "aws_ecs_task_definition" "main" {
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   container_definitions    = jsonencode([
     {
-      name         = var.container_name
+      name         = "${var.app-name}-container"
       image        = "${aws_ecr_repository.main.repository_url}:latest"
       portMappings = [
         {
@@ -24,7 +24,7 @@ resource "aws_ecs_task_definition" "main" {
 
 # Create a Fargate service
 resource "aws_ecs_service" "main" {
-  name            = var.service_name
+  name            = "${var.app-name}-service"
   launch_type     = "FARGATE"
   cluster         = aws_ecs_cluster.main.arn
   task_definition = aws_ecs_task_definition.main.arn
@@ -37,7 +37,7 @@ resource "aws_ecs_service" "main" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.main.arn
-    container_name   = var.container_name
+    container_name   = "${var.app-name}-container"
     container_port   = var.container_port
   }
 
@@ -53,5 +53,5 @@ resource "aws_ecs_service" "main" {
 
 # Create a Fargate cluster
 resource "aws_ecs_cluster" "main" {
-  name = var.cluster_name
+  name = "${var.app-name}-cluster"
 }
