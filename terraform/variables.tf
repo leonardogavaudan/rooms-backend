@@ -53,3 +53,15 @@ variable "availability_zones" {
     "eu-west-3b"
   ]
 }
+
+variable "rds_cluster_identifier" {
+  description = "The name of the cluster"
+  type        = string
+  default     = "rooms-cluster"
+}
+
+variable "rds_cluster_master_username" {
+  description = "The username for the master DB user"
+  type        = string
+  default     = "admin"
+}
